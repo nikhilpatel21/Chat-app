@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+    <title>Chat app using Socket IO and Node JS</title>
+    <style>
+        .f{
+            margin:5px;
+            padding: 2px;
+            border: solid rgb(151, 148, 148) 2px;
+            width:20%
+
+        }
+        #b{
+            margin:5px;
+            padding: 2px;
+            width:10%;
+            border: solid rgb(69, 48, 48) 2px;
+        }
+        body{
+            background-color: aliceblue;
+        }
+
+    </style>
+
+</head>
+  
+<body>
+    <h3 >
+          My chat app 
+      </h3>
+
+    <form 
+          id="form">
+          <div class="f">
+        <input 
+               type="text" 
+               placeholder="Name" 
+               id="myname">
+          </div>
+          <div class="f">
+        <input 
+               type="text" 
+               placeholder="Message" 
+               id="message">
+          </div>
+        <button id="b" >
+              Send
+          </button>
+    </form>
+    <div    id="messageArea">
+    </div>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    let socket = io();
+  
+    let form = document.getElementById('form');
+    let myname = document.getElementById('myname');
+    let message = document.getElementById('message');
+    let messageArea = document.getElementById("messageArea");
+  
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+  
+        if (message.value) {
+            socket.emit('send name', myname.value);
+            socket.emit('send message', message.value);
+            message.value = "";
+        }
+    });
+  
+    socket.on("send name", (username) => {
+        let name = document.createElement("p");
+        name.style.backgroundColor = "grey";
+        name.style.width = "100%";
+        name.style.textAlign = "center";
+        name.style.color = "white";
+        name.textContent = username + ":";
+        messageArea.appendChild(name);
+    });
+  
+    socket.on("send message", (chat) => {
+        let chatContent = document.createElement("p");
+        chatContent.textContent = chat;
+        messageArea.appendChild(chatContent);
+    });
+</script>
+
+</html>
